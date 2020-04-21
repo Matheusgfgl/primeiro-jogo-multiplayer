@@ -35,34 +35,54 @@
                             'fruit1': {x : 3, y:1}
                         }   
                     }
-                    function movePlayer(comand){
-                        
-                            console.log(`Moving ${comand.playerId} with ${comand.keyPressed}`)
+
+                    function movePlayer(comand)
+                    {
+
+                        console.log(`Moving ${comand.playerId} with ${comand.keyPressed}`)
+
+                        //Object literal
+                        const acceptedMoves = {
+                            ArrowDown(player){
+                                console.log("Moving player down")
+                                  if(player.y + 1  < screen.height){
+                                    player.y += 1
+                                }
+                            },
+                              ArrowUp(player){
+                                console.log("Moving player Up")
+                                if(player.y -1  >= 0){
+                                    player.y -= 1
+                                }
+                            },
+                              ArrowLeft(player){
+                                console.log("Moving player left")
+                                   if(keyPressed === 'ArrowLeft' && player.x - 1  >= 0 ){
+                                        player.x -= 1
+                                    }
+                            },
+                              ArrowRight(player){
+                                console.log("Moving player Right")
+                                if(player.x + 1  < screen.width){
+                                    player.x += 1
+                                }
+                            }
+                        }
+            
                             const keyPressed = comand.keyPressed
                             const player = state.players[comand.playerId]
-
-                            if(keyPressed === 'ArrowUp' && player.y -1  >= 0){
-                                player.y -= 1
-                                return
-                            }
-                             if(keyPressed === 'ArrowRight' && player.x + 1  < screen.width){
-                                player.x += 1
-                                return
-                            }
-                              if(keyPressed === 'ArrowDown' && player.y + 1  < screen.height){
-                                player.y += 1
-                                return
-                            }
-                              if(keyPressed === 'ArrowLeft' && player.x - 1  >= 0 ){
-                                player.x -= 1
-                                return
-                            }
+                            const moveFunction = acceptedMoves[keyPressed]
+                            
+                            if(moveFunction){
+                                moveFunction(player)
+                            }    
                     }
                     return {
                         movePlayer,
                         state
                     }
                 }
+
                 const game = createGame();
                 const KeyBordListener = createKeyBordListener();
                 KeyBordListener.subscrive(game.movePlayer)
@@ -105,6 +125,7 @@
 
                 //Render da tela
                 renderScreen()
+
                function renderScreen(){
                    context.fillStyle = 'white'
                    context.clearRect(0, 0, 10, 10)
