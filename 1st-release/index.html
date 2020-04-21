@@ -27,13 +27,40 @@
                 {
 
                     const state = {
-                        players: {
-                            'player1': {x:1, y : 1},
-                            'player2': {x:5, y : 6}
-                        },
-                        fruits: {
-                            'fruit1': {x : 3, y:1}
-                        }   
+                        players: {},
+                        fruits: {}   
+                    }
+
+                    function addPlayer(comand){   
+                        const playerId = comand.playerId
+                        const playerX = comand.playerX
+                        const playerY = comand.playerY
+
+                        state.players[playerId] = {
+                            x: playerX,
+                            y: playerY
+                        }
+                    }
+
+                    function removePlayer(comand){
+                        const playerId = comand.playerId
+                        delete state.players[playerId]
+                    }
+
+                     function addFruit(comand){   
+                        const fruitId = comand.fruitId
+                        const fruitX = comand.fruitX
+                        const fruitY = comand.fruitY
+
+                        state.fruits[fruitId] = {
+                            x: fruitX,
+                            y: fruitY
+                        }
+                    }
+                    
+                    function removeFruit(comand){
+                        const fruitId = comand.fruitId
+                        delete state.fruits[fruitId]
                     }
 
                     function movePlayer(comand)
@@ -70,22 +97,50 @@
                         }
             
                             const keyPressed = comand.keyPressed
+                            const playerId = comand.playerId
                             const player = state.players[comand.playerId]
                             const moveFunction = acceptedMoves[keyPressed]
                             
-                            if(moveFunction){
+                            if(player && moveFunction){
                                 moveFunction(player)
+                                checkForFruitCollision(playerId)
                             }    
                     }
+                    
+                    function checkForFruitCollision(playerId){
+                        const player = state.players[playerId]
+
+                        for(const fruitId in state.fruits){
+                            const fruit = state.fruits[fruitId]
+                            console.log(`Cheking ${playerId} and ${fruitId}`)
+
+                            if(fruit.x === player.x && player.y === fruit.y){
+                                console.log(`Collision between ${playerId} and ${fruitId}`)
+                                removeFruit({fruitId: fruitId});
+                            }
+                        }
+                    }
+
+
                     return {
+                        addPlayer,
+                        removePlayer,
+                        addFruit,
+                        removeFruit,
                         movePlayer,
                         state
                     }
                 }
 
                 const game = createGame();
+                game.addPlayer({playerId: 'player1', playerX: 1, playerY: 1});
+                 game.addPlayer({playerId: 'player 2', playerX: 3, playerY: 1});
+
+                  game.addFruit({fruitId: 'fruit 1', fruitX: 4, fruitY: 4});
+                  game.addFruit({fruitId: 'fruit2', fruitX: 6, fruitY: 4});
+
                 const KeyBordListener = createKeyBordListener();
-                KeyBordListener.subscrive(game.movePlayer)
+                KeyBordListener.subscrive(game.movePlayer);
 
                //Factory
                 function createKeyBordListener(){
