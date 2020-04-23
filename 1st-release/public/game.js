@@ -11,10 +11,13 @@
             }  
         }
 
+        function setState(newState){
+            Object.assign(state, newState)
+        }
         function addPlayer(comand){   
             const playerId = comand.playerId
-            const playerX = comand.playerX
-            const playerY = comand.playerY
+            const playerX = 'playerX' in comand ? comand.playerX : Math.floor(Math.random () * state.screen.width)
+            const playerY =  'playerY' in comand ? comand.playerY : Math.floor(Math.random () * state.screen.height)
 
             state.players[playerId] = {
                 x: playerX,
@@ -100,14 +103,13 @@
                 }
             }
         }
-
-
         return {
             addPlayer,
             removePlayer,
             addFruit,
             removeFruit,
             movePlayer,
-            state
+            state, 
+            setState
         }
     }
