@@ -6,73 +6,115 @@
             players: {},
             fruits: {} ,
             screen : {
-                width: 10,
-                height: 10
+                width: 25,
+                height: 25
             }  
+        }
+
+        const observers = []
+
+        function start(){
+            const frequency = 1000
+
+            setInterval(addFruit, frequency)
+        }
+
+         function subscrive(observerFunction){
+            observers.push(observerFunction)
+        }
+
+        function notifyAll(comand){
+            for(const observerFunction of observers){
+                observerFunction(comand)
+            }
         }
 
         function setState(newState){
             Object.assign(state, newState)
         }
+        
         function addPlayer(comand){   
             const playerId = comand.playerId
             const playerX = 'playerX' in comand ? comand.playerX : Math.floor(Math.random () * state.screen.width)
             const playerY =  'playerY' in comand ? comand.playerY : Math.floor(Math.random () * state.screen.height)
+            const score = 0
 
             state.players[playerId] = {
                 x: playerX,
-                y: playerY
+                y: playerY,
+                score
             }
+
+            notifyAll({
+                type: 'add-player',
+                playerId: playerId,
+                playerX: playerX,
+                playerY: playerY,
+                score
+            })
         }
 
         function removePlayer(comand){
             const playerId = comand.playerId
             delete state.players[playerId]
+
+              notifyAll({
+                type: 'remove-player',
+                playerId: playerId,
+            })
         }
 
             function addFruit(comand){   
-            const fruitId = comand.fruitId
-            const fruitX = comand.fruitX
-            const fruitY = comand.fruitY
+            const fruitId = comand ? comand.fruitId : Math.floor(Math.random () * 1000000)
+            const fruitX = comand ? comand.fruitX : Math.floor(Math.random () * state.screen.width)
+            const fruitY =  comand ? comand.fruitY : Math.floor(Math.random () * state.screen.height)
 
             state.fruits[fruitId] = {
                 x: fruitX,
                 y: fruitY
             }
+            
+            notifyAll({
+                type: 'add-fruit',
+                fruitId: fruitId,
+                fruitX: fruitX,
+                fruitY: fruitY
+
+            })
         }
         
         function removeFruit(comand){
             const fruitId = comand.fruitId
             delete state.fruits[fruitId]
+
+            notifyAll({
+                type: 'remove-fruit',
+                fruitId: fruitId
+            })
         }
 
         function movePlayer(comand)
         {
-
-            console.log(`Moving ${comand.playerId} with ${comand.keyPressed}`)
+            notifyAll(comand)
 
             //Object literal
             const acceptedMoves = {
                 ArrowDown(player){
-                    console.log("Moving player down")
                         if(player.y + 1  < state.screen.height){
                         player.y += 1
                     }
                 },
                     ArrowUp(player){
-                    console.log("Moving player Up")
                     if(player.y -1  >= 0){
                         player.y -= 1
                     }
                 },
                     ArrowLeft(player){
-                    console.log("Moving player left")
                         if(keyPressed === 'ArrowLeft' && player.x - 1  >= 0 ){
                             player.x -= 1
                         }
                 },
                     ArrowRight(player){
-                    console.log("Moving player Right")
                     if(player.x + 1  < state.screen.width){
                         player.x += 1
                     }
@@ -95,11 +137,11 @@
 
             for(const fruitId in state.fruits){
                 const fruit = state.fruits[fruitId]
-                console.log(`Cheking ${playerId} and ${fruitId}`)
 
                 if(fruit.x === player.x && player.y === fruit.y){
                     console.log(`Collision between ${playerId} and ${fruitId}`)
                     removeFruit({fruitId: fruitId});
+                    player.score += 1
                 }
             }
         }
@@ -110,6 +152,8 @@
             removeFruit,
             movePlayer,
             state, 
-            setState
+            setState,
+            subscrive,
+            start
         }
     }

@@ -367,6 +367,8 @@ For information about the governance of the Node.js project, see
 **Ouyang Yadong** &lt;oyydoibh@gmail.com&gt; (he/him)
 * [psmarshall](https://github.com/psmarshall) -
 **Peter Marshall** &lt;petermarshall@chromium.org&gt; (he/him)
+* [puzpuzpuz](https://github.com/puzpuzpuz) -
+**Andrey Pechkurov** &lt;apechkurov@gmail.com&gt; (he/him)
 * [Qard](https://github.com/Qard) -
 **Stephen Belanger** &lt;admin@stephenbelanger.com&gt; (he/him)
 * [refack](https://github.com/refack) -
@@ -546,7 +548,7 @@ maintaining the Node.js project.
 
 ### Release Keys
 
-GPG keys used to sign Node.js releases:
+Primary GPG keys for Node.js Releasers (some Releasers sign with subkeys):
 
 * **Beth Griggs** &lt;bethany.griggs@uk.ibm.com&gt;
 `4ED778F539E3634C779C87C6D7062848A1AB005C`

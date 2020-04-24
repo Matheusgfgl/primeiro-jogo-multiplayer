@@ -1,7 +1,11 @@
     //Factory
     export default function createKeyBordListener(){
         const state = {
-            observers: []
+            observers: [],
+            playerId: null
+        }
+        function registerPlayerId(playerId){
+            state.playerId = playerId
         }
 
         function subscrive(observerFunction){
@@ -23,13 +27,15 @@
             const keyPressed = event.key
 
             const comand = {
-                playerId : 'player1',
+                type: 'move-player',
+                playerId : state.playerId,
                 keyPressed
             }
 
             notifyAll(comand)
         }
         return {
-            subscrive
+            subscrive,
+            registerPlayerId
         }
     }
